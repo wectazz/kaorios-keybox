@@ -24,14 +24,17 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          TELEGRAM_CHAT_ID_2: ${{ secrets.TELEGRAM_CHAT_ID_2 }}
+          TELEGRAM_THREAD_ID_2: ${{ secrets.TELEGRAM_THREAD_ID_2 }}
         run: python check_file.py
 
-      - name: Save state (Hash and Message ID)
+      - name: Save state
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # Добавляем оба файла в отслеживание
-          git add last_hash.txt last_msg_id.txt
-          git commit -m "Update state: new hash and message id" || exit 0
+          # Сохраняем хеш и оба файла с ID сообщений
+          git add last_hash.txt last_msg_id_1.txt last_msg_id_2.txt
+          git commit -m "Update states for both groups" || exit 0
           git push
+
           
