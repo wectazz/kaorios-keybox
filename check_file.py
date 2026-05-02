@@ -8,7 +8,7 @@ TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
 HASH_FILE = "last_hash.txt"
 MSG_ID_FILE = "last_msg_id.txt"
-CAPTION = "Keybox 🟢🟢🟢"
+CAPTION = "New Keybox: 🟢🟢🟢"
 
 def get_hash(text):
     return hashlib.sha256(text.encode('utf-8')).hexdigest()
