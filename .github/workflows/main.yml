@@ -32,9 +32,7 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # Сохраняем хеш и оба файла с ID сообщений
           git add last_hash.txt last_msg_id_1.txt last_msg_id_2.txt
-          git commit -m "Update states for both groups" || exit 0
+          git commit -m "Update state" || exit 0
           git push
-
           
