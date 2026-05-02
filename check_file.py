@@ -2,14 +2,14 @@ import requests
 import os
 import hashlib
 
-# Константы
+# Настройки
 URL = "https://raw.githubusercontent.com/Wuang26/Kaorios-Toolbox/refs/heads/main/Toolbox-data/Keybox.xml"
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CAPTION = "Keybox 🟢🟢🟢"
 FILENAME = "Keybox.xml"
 HASH_FILE = "last_hash.txt"
 
-# Список чатов (Первая группа и Вторая группа с темой)
+# Список чатов
 TARGETS = [
     {
         "chat_id": os.getenv("TELEGRAM_CHAT_ID"),
@@ -36,56 +36,40 @@ def delete_old_message(target):
 
 def send_to_target(target, content):
     delete_old_message(target)
-    
-    # Сохраняем файл
     with open(FILENAME, "w", encoding="utf-8") as f:
         f.write(content)
     
     send_url = f"https://api.telegram.org/bot{TOKEN}/sendDocument"
     with open(FILENAME, "rb") as f:
-        payload = {
-            "chat_id": target["chat_id"],
-            "caption": CAPTION,
-            "parse_mode": "HTML"
-        }
-        # Проверка на ID темы
+        payload = {"chat_id": target["chat_id"], "caption": CAPTION, "parse_mode": "HTML"}
         t_id = target.get("thread_id")
         if t_id and str(t_id).strip():
             payload["message_thread_id"] = t_id
             
-        files = {"document": f}
-        r = requests.post(send_url, data=payload, files=files)
-        
+        r = requests.post(send_url, data=payload, files={"document": f})
         if r.status_code == 200:
             new_id = r.json().get("result", {}).get("message_id")
             with open(target["msg_id_file"], "w") as f:
                 f.write(str(new_id))
             print(f"Отправлено в {target['chat_id']}")
-        else:
-            print(f"Ошибка TG ({target['chat_id']}): {r.text}")
 
 # Логика
-response = requests.get(URL)
-if response.status_code == 200:
-    current_content = response.text
-    current_hash = get_hash(current_content)
-
+res = requests.get(URL)
+if res.status_code == 200:
+    curr_content = res.text
+    curr_hash = get_hash(curr_content)
+    last_hash = ""
     if os.path.exists(HASH_FILE):
         with open(HASH_FILE, "r") as f:
             last_hash = f.read().strip()
-    else:
-        last_hash = ""
 
-    if current_hash != last_hash:
-        print("Найдено обновление!")
+    if curr_hash != last_hash:
+        print("Обновление!")
         for target in TARGETS:
-            if target["chat_id"]: # Проверка, что секрет заполнен
-                send_to_target(target, current_content)
-        
+            if target["chat_id"]:
+                send_to_target(target, curr_content)
         with open(HASH_FILE, "w") as f:
-            f.write(current_hash)
+            f.write(curr_hash)
     else:
         print("Изменений нет.")
-else:
-    print(f"Ошибка загрузки: {response.status_code}")
-    
+        
