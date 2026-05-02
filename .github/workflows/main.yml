@@ -32,7 +32,13 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add last_hash.txt last_msg_id_1.txt last_msg_id_2.txt
+          
+          # Проверяем наличие каждого файла перед добавлением, чтобы не было ошибки
+          if [ -f last_hash.txt ]; then git add last_hash.txt; fi
+          if [ -f last_msg_id_1.txt ]; then git add last_msg_id_1.txt; fi
+          if [ -f last_msg_id_2.txt ]; then git add last_msg_id_2.txt; fi
+          
+          # Коммитим только если есть что сохранять
           git commit -m "Update state" || exit 0
           git push
           
