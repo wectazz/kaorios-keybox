@@ -5,7 +5,7 @@ import hashlib
 # Константы
 URL = "https://raw.githubusercontent.com/Wuang26/Kaorios-Toolbox/refs/heads/main/Toolbox-data/Keybox.xml"
 TOKEN = os.getenv("TELEGRAM_TOKEN")
-CAPTION = "New Keybox: 🟢🟢🟢"
+CAPTION = "New Keybox (by Kaorios Toolbox): 🟢🟢🟢"
 FILENAME = "Keybox.xml"
 HASH_FILE = "last_hash.txt"
 
