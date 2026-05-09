@@ -5,7 +5,7 @@ import hashlib
 # Константы
 URL = "https://raw.githubusercontent.com/Wuang26/Kaorios-Toolbox/refs/heads/main/Toolbox-data/Keybox.xml"
 TOKEN = os.getenv("TELEGRAM_TOKEN")
-CAPTION = "New Keybox (by Kaorios Toolbox): 🟢🟢🟢"
+CAPTION = "Keybox 🟢🟢🟢"
 FILENAME = "Keybox.xml"
 HASH_FILE = "last_hash.txt"
 
@@ -61,6 +61,21 @@ def send_to_target(target, content):
             with open(target["msg_id_file"], "w") as f:
                 f.write(str(new_id))
             print(f"✅ Успешно отправлено в: {target['name']}")
+            
+            # --- НОВЫЙ БЛОК: ЗАКРЕПЛЕНИЕ СООБЩЕНИЯ ---
+            pin_url = f"https://api.telegram.org/bot{TOKEN}/pinChatMessage"
+            pin_payload = {
+                "chat_id": target["chat_id"],
+                "message_id": new_id,
+                "disable_notification": True # Закрепляем без звукового уведомления
+            }
+            pin_r = requests.post(pin_url, data=pin_payload)
+            if pin_r.status_code == 200:
+                print(f"📌 Сообщение закреплено в: {target['name']}")
+            else:
+                print(f"⚠️ Не удалось закрепить в {target['name']}: {pin_r.text}")
+            # ------------------------------------------
+            
         else:
             print(f"❌ Ошибка TG для {target['name']}: {r.text}")
 
